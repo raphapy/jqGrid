@@ -1890,7 +1890,9 @@ $.fn.jqGrid = function( pin ) {
 			}
 		},
 		populate = function (npage) {
-			if(!ts.grid.hDiv.loading) {
+                        
+                    try {
+                        if(!ts.grid.hDiv.loading) {
 				var pvis = ts.p.scroll && npage === false,
 				prm = {}, dt, dstr, pN=ts.p.prmNames;
 				if(ts.p.page <=0) { ts.p.page = 1; }
@@ -2027,6 +2029,41 @@ $.fn.jqGrid = function( pin ) {
 				break;
 				}
 			}
+                        
+                    } finally {
+                        
+                        /*redimensionamos el campo row num*/
+                        
+                        var pagina = $(ts).jqGrid('getGridParam', 'page');
+                        var inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * $(ts).jqGrid('getGridParam','rowNum');
+                                           
+                        //este es el maximo valor de row num para la pagina actual
+                        var maxValInCurrentPage = inicio 
+                                                  +
+                                                  $(ts).jqGrid('getGridParam','rowNum');
+
+                        //este valor es estimado para el tamanho de fuente que usamos. Representa la cantidad
+                        //de pixeles por cada caracter
+                        var pixPerCharacter = 10;
+
+                        //calculamos el total de pixeles para el nuevo valor
+                        var newColWidth = pixPerCharacter * maxValInCurrentPage.toString().length;
+
+                        //calculamos el nuevo ancho de la grilla
+                        var newTableWidth =  $(ts).jqGrid('getGridWidth')
+                                             - 
+                                             $(ts).jqGrid('getGridParam', 'rownumWidth')
+                                             + 
+                                             newColWidth;
+
+                        //redimensionamos el campo "row num"
+                        $(ts).jqGrid('setGridParam', {rownumWidth:newColWidth})
+                        $(ts).jqGrid('setColProp','rn', {width:newColWidth, widthOrg:newColWidth});
+
+                        //redimensionamos la grilla
+                        $(ts).jqGrid('setGridWidth', newTableWidth);
+                        
+                    }
 		},
 		setHeadCheckBox = function ( checked ) {
 			$('#cb_'+$.jgrid.jqID(ts.p.id),ts.grid.hDiv)[ts.p.useProp ? 'prop': 'attr']("checked", checked);
@@ -3407,7 +3444,7 @@ $.jgrid.extend({
 		$(ts).triggerHandler("jqGridRemapColumns", [permutation, updateCells, keepHeader]);
 	},
         getGridWidth: function() {
-            return this.getGridParam('width');
+            return $(this).jqGrid('getGridParam','width');
         },
 	setGridWidth : function(nwidth, shrink) {
 		return this.each(function(){
@@ -3456,7 +3493,8 @@ $.jgrid.extend({
 				initwidth =0;
 				var cle = $t.grid.cols.length >0;
 				$.each($t.p.colModel, function(i) {
-					if(this.hidden === false && (!this.fixed || this.name==='rn' )){
+                                        
+					if((this.hidden === false && !this.fixed) || this.name==='rn'){
 						cw = this.widthOrg;
 						cw = Math.round(aw*cw/($t.p.tblwidth-brd*vc-gw));
 						if (cw < 0) { return; }
