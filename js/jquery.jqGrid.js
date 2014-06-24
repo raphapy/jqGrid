@@ -2,12 +2,17 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license jqGrid  4.5.2 - jQuery Grid
+ * @license jqGrid  4.5.2.0 - jQuery Grid
  * Copyright (c) 2008, Tony Tomov, tony@trirand.com
  * Dual licensed under the MIT and GPL licenses
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
  * Date: 2013-05-21
+ *
+ * 
+ * Version 4.5.2.0 es un release que permite redimensionar el 
+ * campo que indica el numero de fila.
+ * Rafael Benegas, 24-jun-2014
  */
 //jsHint options
 /*jshint evil:true, eqeqeq:false, eqnull:true, devel:true */
