@@ -2373,7 +2373,7 @@ $.fn.jqGrid = function( pin ) {
 		}
 		if(this.p.rownumbers) {
 			this.p.colNames.unshift("");
-			this.p.colModel.unshift({name:'rn',width:ts.p.rownumWidth,sortable:false,resizable:false,hidedlg:true,search:false,align:'center',fixed:true});
+			this.p.colModel.unshift({name:'rn',width:ts.p.rownumWidth,sortable:false,resizable:true,hidedlg:true,search:false,align:'center',fixed:true});
 		}
 		ts.p.xmlReader = $.extend(true,{
 			root: "rows",
@@ -3401,6 +3401,9 @@ $.jgrid.extend({
 		if(ts.p.treeGrid) { ts.p.expColInd = $.inArray(ts.p.expColInd, permutation); }
 		$(ts).triggerHandler("jqGridRemapColumns", [permutation, updateCells, keepHeader]);
 	},
+        getGridWidth: function() {
+            return this.getGridParam('width');
+        },
 	setGridWidth : function(nwidth, shrink) {
 		return this.each(function(){
 			if (!this.grid ) {return;}
@@ -3427,7 +3430,7 @@ $.jgrid.extend({
 			if(shrink===true) {
 				$.each($t.p.colModel, function() {
 					if(this.hidden===false){
-						cw = this.widthOrg;
+						cw = this.width;
 						initwidth += cw+brd;
 						if(this.fixed) {
 							gw += cw+brd;
@@ -3448,7 +3451,7 @@ $.jgrid.extend({
 				initwidth =0;
 				var cle = $t.grid.cols.length >0;
 				$.each($t.p.colModel, function(i) {
-					if(this.hidden === false && !this.fixed){
+					if(this.hidden === false && (!this.fixed || this.name==='rn' )){
 						cw = this.widthOrg;
 						cw = Math.round(aw*cw/($t.p.tblwidth-brd*vc-gw));
 						if (cw < 0) { return; }
